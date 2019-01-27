@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "101517906772",
+    "firebase_url": "https://senior-project-tkd-app-1.firebaseio.com",
+    "project_id": "senior-project-tkd-app-1",
+    "storage_bucket": "senior-project-tkd-app-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101517906772:android:35ab397e6f2f2fb4",
+        "android_client_info": {
+          "package_name": "com.josephcharlesserrano.seniorproject1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101517906772-dcfarn2qovdlq8dih1qaj8ou6efl55k0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1h50tirtYLAf1FitzTVvSsI559k_MpXg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
