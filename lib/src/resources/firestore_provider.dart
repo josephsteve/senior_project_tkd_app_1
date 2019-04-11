@@ -9,6 +9,7 @@ class FirestoreProvider {
   Stream<QuerySnapshot> getAllBelts() {
     return _firestore
         .collection("belts")
+        .orderBy('level')
         .snapshots();
   }
 

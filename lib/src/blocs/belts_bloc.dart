@@ -7,15 +7,15 @@ class BeltsBloc {
   final _repository = Repository();
   final _id = BehaviorSubject<String>();
   final _beltname = BehaviorSubject<String>();
-  final _level = BehaviorSubject<int>();
+  final _level = BehaviorSubject<String>();
   final _showProgress = BehaviorSubject<bool>();
 
   Observable<String> get id => _id.stream;
   Observable<String> get beltname => _beltname.stream.transform(_validateName);
-  Observable<int> get level => _level.stream.transform(_validateLevel);
+  Observable<String> get level => _level.stream.transform(_validateLevel);
   Observable<bool> get showProgress => _showProgress.stream;
   Function(String) get changeBeltName => _beltname.sink.add;
-  Function(int) get changeLevel => _level.sink.add;
+  Function(String) get changeLevel => _level.sink.add;
 
   final _validateName = StreamTransformer<String, String>.fromHandlers(
     handleData: (beltname, sink) {
@@ -27,9 +27,9 @@ class BeltsBloc {
     }
   );
 
-  final _validateLevel = StreamTransformer<int, int>.fromHandlers(
+  final _validateLevel = StreamTransformer<String, String>.fromHandlers(
     handleData: (level, sink) {
-      if (level > 0) {
+      if (int.parse(level) > 0) {
         sink.add(level);
       } else {
         sink.addError("level must be greater than 0");
@@ -39,7 +39,7 @@ class BeltsBloc {
 
   void submit() {
     _showProgress.sink.add(true);
-    Belt _belt = Belt(beltname: _beltname.value, level: _level.value);
+    Belt _belt = Belt(beltname: _beltname.value, level: int.parse(_level.value));
     _repository.addBelt(_belt)
     .then((value) {
       _id.sink.add(value);
