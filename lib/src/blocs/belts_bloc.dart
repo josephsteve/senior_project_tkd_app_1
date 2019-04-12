@@ -29,7 +29,10 @@ class BeltsBloc {
 
   final _validateLevel = StreamTransformer<String, String>.fromHandlers(
     handleData: (level, sink) {
-      if (int.parse(level) > 0) {
+      var value = int.tryParse(level);
+      if (value == null) {
+        sink.addError("level should be a number");
+      } else if (value != null && int.parse(level) > 0) {
         sink.add(level);
       } else {
         sink.addError("level must be greater than 0");
