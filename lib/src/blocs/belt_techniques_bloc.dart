@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-import '../models/belt_technique_model.dart';
 import '../resources/repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -22,11 +21,12 @@ class BeltTechniquesBloc {
 //  Function(String) get changeBeltId => _beltId.sink.add;
 
   final _validateName = StreamTransformer<String, String>.fromHandlers(
-    handleData: (beltname, sink) {
-      if (beltname.length > 3 && RegExp(r'[a-zA-Z]').hasMatch(beltname)) {
-        sink.add(beltname);
+    handleData: (techniquename, sink) {
+      if (techniquename.length > 3 && RegExp(r'[a-zA-Z]').hasMatch(techniquename)) {
+        sink.add(techniquename);
+        print(techniquename);
       } else {
-        sink.addError("beltname should have 3 characters or more and letters only");
+        sink.addError("techniqueName should have 3 characters or more and letters only");
       }
     }
   );
@@ -46,6 +46,8 @@ class BeltTechniquesBloc {
 
   void submit(String beltId) {
     _showProgress.sink.add(true);
+    print(beltId);
+    print(_techniqueName.value);
     BeltTechniqueTemp _belt = BeltTechniqueTemp(beltId: beltId, techniqueName: _techniqueName.value, difficulty: int.parse(_difficulty.value));
     _repository.addBeltTechnique(_belt)
       .then((value) {

@@ -6,8 +6,9 @@ import '../blocs/belt_techniques_bloc.dart';
 class AddBeltTechnique extends StatelessWidget {
 
   final String beltId;
+  final String beltName;
 
-  const AddBeltTechnique({Key key, this.beltId}): super(key: key);
+  const AddBeltTechnique({Key key, this.beltId, this.beltName}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +16,10 @@ class AddBeltTechnique extends StatelessWidget {
       child: MaterialApp(
         home: Scaffold(
           appBar: AppBar(
-            title: Text("Add Technique"),
+            title: Text("Add Technique for " + beltName),
             leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
           ),
-          body: BeltTechniqueAddScreen(beltId: beltId)
+          body: BeltTechniqueAddScreen(beltId: beltId, beltName: beltName)
         ),
       ),
     );
@@ -28,7 +29,8 @@ class AddBeltTechnique extends StatelessWidget {
 class BeltTechniqueAddScreen extends StatefulWidget {
 
   final String beltId;
-  const BeltTechniqueAddScreen({Key key, this.beltId}): super(key: key);
+  final String beltName;
+  const BeltTechniqueAddScreen({Key key, this.beltId, this.beltName}): super(key: key);
 
   @override
   _BeltTechniqueAddScreenState createState() => _BeltTechniqueAddScreenState();
@@ -99,14 +101,16 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
                 child: Text('Save'),
                 onPressed: () {
                   _bloc.submit(widget.beltId);
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique()));
+//                  Navigator.pop(context);
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: widget.beltId, beltName: widget.beltName)));
                 },
               ),
               RaisedButton(
                 shape: RoundedRectangleBorder(side: BorderSide(style: BorderStyle.none), borderRadius: BorderRadius.circular(8.0)),
                 color: Colors.grey,
                 child: Text('Cancel'),
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique()))
+//                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: widget.beltId, beltName: widget.beltName)))
               ),
             ],
           ),

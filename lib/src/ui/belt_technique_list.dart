@@ -7,8 +7,9 @@ import '../blocs/belt_techniques_bloc_provider.dart';
 class ListBeltTechnique extends StatelessWidget {
 
   final String beltId;
+  final String beltName;
 
-  const ListBeltTechnique({Key key, this.beltId}): super(key: key);
+  const ListBeltTechnique({Key key, this.beltId, this.beltName}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +17,13 @@ class ListBeltTechnique extends StatelessWidget {
       child: MaterialApp(
         home: Scaffold(
           appBar: AppBar(
-            title: Text(beltId),
+            title: Text(beltName),
             leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
           ),
           body: BeltTechniqueListScreen(beltId: beltId),
           floatingActionButton: FloatingActionButton(
             onPressed: () =>
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddBeltTechnique(beltId: beltId))),
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddBeltTechnique(beltId: beltId, beltName: beltName))),
             child: Icon(Icons.add),
           ),
         ),

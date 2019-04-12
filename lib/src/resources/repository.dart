@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/belt_technique_model.dart';
 import 'firestore_provider.dart';
 export '../models/belt_model.dart';
+export '../models/belt_technique_model.dart';
 
 class Repository {
 

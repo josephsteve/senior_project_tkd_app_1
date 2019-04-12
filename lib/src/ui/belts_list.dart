@@ -27,7 +27,7 @@ class _BeltListScreenState extends State<BeltListScreen> {
     Belt _belt = Belt.fromMap(doc.data);
     return ListTile(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: doc.documentID,)));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: doc.documentID, beltName: _belt.beltname,)));
       },
       key: ValueKey(doc.documentID),
       title: Container(
