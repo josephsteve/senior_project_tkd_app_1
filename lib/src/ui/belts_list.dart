@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'belt_technique_list.dart';
 import '../blocs/belts_bloc_provider.dart';
 
 class BeltListScreen extends StatefulWidget {
@@ -25,7 +26,9 @@ class _BeltListScreenState extends State<BeltListScreen> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot doc) {
     Belt _belt = Belt.fromMap(doc.data);
     return ListTile(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: doc.documentID,)));
+      },
       key: ValueKey(doc.documentID),
       title: Container(
         decoration: BoxDecoration(

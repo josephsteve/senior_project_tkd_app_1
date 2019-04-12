@@ -24,3 +24,31 @@ class BeltTechnique {
   };
 
 }
+
+class BeltTechniqueTemp {
+
+  String id;
+  String beltId;
+  String techniqueName;
+  int difficulty;
+
+  BeltTechniqueTemp({
+    this.id,
+    @required this.beltId,
+    @required this.techniqueName,
+    this.difficulty = 0 }) :
+      assert(beltId != null && beltId.isNotEmpty),
+      assert(techniqueName != null && techniqueName.isNotEmpty);
+
+  BeltTechniqueTemp.fromMap(Map<String, dynamic> data) :
+      this(id: data["id"], beltId: data["belt_id"], techniqueName: data["technique_name"],
+      difficulty: data["difficulty"]);
+
+  Map<String, dynamic> toMap() => {
+    "id": this.id,
+    "belt_id": this.beltId,
+    "technique_name": this.techniqueName,
+    "difficulty": this.difficulty
+  };
+  
+}

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/belt_technique_model.dart';
 import '../models/belt_model.dart';
 export '../models/belt_model.dart';
 
@@ -22,6 +23,19 @@ class FirestoreProvider {
 
   Future<String> addBelt(Belt _belt) async {
     DocumentReference _ref = await _firestore.collection("belts").add(_belt.toMap());
+    return _ref.documentID;
+  }
+  
+  Stream<QuerySnapshot> getBeltTechniques(String beltId) {
+    return _firestore
+      .collection("belt_techniques")
+      .where("belt_id", isEqualTo: beltId)
+      .orderBy("difficulty")
+      .snapshots();
+  }
+
+  Future<String> addBeltTechnique(BeltTechniqueTemp _belttechnique) async {
+    DocumentReference _ref = await _firestore.collection("belt_techniques").add(_belttechnique.toMap());
     return _ref.documentID;
   }
 }
