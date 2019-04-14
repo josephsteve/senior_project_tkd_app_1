@@ -97,16 +97,14 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
                 child: Text('Save'),
                 onPressed: () {
                   _bloc.submit(widget.beltId);
-//                  Navigator.pop(context);
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: widget.beltId, beltName: widget.beltName)));
+                  Navigator.pop(context);
                 },
               ),
               RaisedButton(
                 shape: RoundedRectangleBorder(side: BorderSide(style: BorderStyle.none), borderRadius: BorderRadius.circular(8.0)),
                 color: Colors.grey,
                 child: Text('Cancel'),
-//                onPressed: () => Navigator.pop(context),
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: widget.beltId, beltName: widget.beltName)))
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
