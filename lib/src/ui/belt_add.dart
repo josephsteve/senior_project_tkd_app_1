@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import '../app.dart';
 import '../blocs/belts_bloc_provider.dart';
 import '../blocs/belts_bloc.dart';
 
 class AddBelt extends StatelessWidget {
+
+  final String beltID;
+
+  AddBelt({this.beltID});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,20 +15,21 @@ class AddBelt extends StatelessWidget {
         title: Text("Add Belt"),
         leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
       ),
-      body: BeltAddScreen(),
+      body: BeltAddScreen(beltID: beltID,),
     );
   }
 }
 
 class BeltAddScreen extends StatefulWidget {
+  final String beltID;
+
+  BeltAddScreen({this.beltID});
   @override
   _BeltAddScreenState createState() => _BeltAddScreenState();
 }
 
 class _BeltAddScreenState extends State<BeltAddScreen> {
   BeltsBloc _bloc;
-
-  final _beltNameController = new TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -66,6 +71,9 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // _bloc.getBelt(widget.beltID);
+    // TODO: getBelt(widget.beltID);
+    print(widget.beltID);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[

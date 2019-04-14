@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'belt_add.dart';
+import 'slide_menu.dart';
 import 'belt_technique_list.dart';
 import '../blocs/belts_bloc_provider.dart';
 
@@ -10,6 +13,7 @@ class BeltListScreen extends StatefulWidget {
 
 class _BeltListScreenState extends State<BeltListScreen> {
   BeltsBloc _bloc;
+  final closeMenuNotifier = new StreamController.broadcast();
 
   @override
   void didChangeDependencies() {
@@ -20,28 +24,51 @@ class _BeltListScreenState extends State<BeltListScreen> {
   @override
   void dispose() {
     _bloc.dispose();
+    closeMenuNotifier.close();
     super.dispose();
+  }
+
+  getBeltInfo(documentID) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddBelt(beltID: documentID,)));
+    closeMenuNotifier.sink.add(null);
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot doc) {
     Belt _belt = Belt.fromMap(doc.data);
-    return ListTile(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: doc.documentID, beltName: _belt.beltname,)));
-      },
-      key: ValueKey(doc.documentID),
-      title: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFF957343)),
-          borderRadius: BorderRadius.circular(5.0)
-        ),
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: <Widget>[
-            Text(_belt.beltname)
-          ],
+    return SlideMenu(
+      child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListBeltTechnique(beltId: doc.documentID, beltName: _belt.beltname,)));
+        },
+        key: ValueKey(doc.documentID),
+        title: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFF957343)),
+            borderRadius: BorderRadius.circular(5.0)
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Text(_belt.beltname)
+            ],
+          ),
         ),
       ),
+      menuItems: <Widget>[
+        new Container(
+          child: new IconButton(
+            icon: new Icon(Icons.delete),
+            onPressed: () => closeMenuNotifier.sink.add(null),
+          ),
+        ),
+        new Container(
+          child: new IconButton(
+            icon: new Icon(Icons.info),
+            onPressed: () => getBeltInfo(doc.documentID),
+          ),
+        ),
+      ],
+      triggerCloseMenu: closeMenuNotifier.stream,
     );
   }
 
