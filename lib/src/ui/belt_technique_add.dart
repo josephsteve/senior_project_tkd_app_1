@@ -12,16 +12,12 @@ class AddBeltTechnique extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BeltTechniquesBlocProvider(
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text("Add Technique for " + beltName),
-            leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
-          ),
-          body: BeltTechniqueAddScreen(beltId: beltId, beltName: beltName)
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Technique for " + beltName),
+        leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
       ),
+      body: BeltTechniqueAddScreen(beltId: beltId, beltName: beltName)
     );
   }
 }

@@ -19,10 +19,10 @@ class BeltsBloc {
 
   final _validateName = StreamTransformer<String, String>.fromHandlers(
     handleData: (beltname, sink) {
-      if (beltname.length > 3 && RegExp(r'[a-zA-Z]').hasMatch(beltname)) {
+      if (beltname.length > 2 && RegExp(r'[a-zA-Z]').hasMatch(beltname)) {
         sink.add(beltname);
       } else {
-        sink.addError("beltname should have 3 characters or more and letters only");
+        sink.addError("beltname should have 2 characters or more and letters only");
       }
     }
   );

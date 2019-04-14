@@ -6,16 +6,12 @@ import '../blocs/belts_bloc.dart';
 class AddBelt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BeltsBlocProvider(
-        child: MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              title: Text("Add Belt"),
-              leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
-            ),
-            body: BeltAddScreen(),
-          ),
-        )
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Belt"),
+        leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
+      ),
+      body: BeltAddScreen(),
     );
   }
 }
@@ -92,14 +88,14 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
                 child: Text('Save'),
                 onPressed: () {
                   _bloc.submit();
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyApp()));
+                  Navigator.pop(context);
                 },
               ),
               RaisedButton(
                 shape: RoundedRectangleBorder(side: BorderSide(style: BorderStyle.none), borderRadius: BorderRadius.circular(8.0)),
                 color: Colors.grey,
                 child: Text('Cancel'),
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyApp()))
+                onPressed: () => Navigator.pop(context)
               ),
             ],
           ),

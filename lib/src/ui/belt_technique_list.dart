@@ -13,20 +13,16 @@ class ListBeltTechnique extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BeltTechniquesBlocProvider(
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text(beltName),
-            leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
-          ),
-          body: BeltTechniqueListScreen(beltId: beltId),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () =>
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddBeltTechnique(beltId: beltId, beltName: beltName))),
-            child: Icon(Icons.add),
-          ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(beltName),
+        leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
+      ),
+      body: BeltTechniqueListScreen(beltId: beltId),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () =>
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddBeltTechnique(beltId: beltId, beltName: beltName))),
+        child: Icon(Icons.add),
       ),
     );
   }
