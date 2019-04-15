@@ -13,5 +13,8 @@ class Repository {
   Future<void> saveBelt(String beltID, Belt _belt) => _firestoreProvider.saveBelt(beltID, _belt);
   Future<void> deleteBelt(String beltID) => _firestoreProvider.deleteBelt(beltID);
   Stream<QuerySnapshot> getBeltTechniques(String beltId) => _firestoreProvider.getBeltTechniques(beltId);
+  Stream<DocumentSnapshot> getBeltTechnique(String id) => _firestoreProvider.getBeltTechnique(id);
   Future<String> addBeltTechnique(BeltTechniqueTemp _belttechnique) => _firestoreProvider.addBeltTechnique(_belttechnique);
+  Future<void> saveBeltTechnique(String techniqueID, BeltTechniqueTemp _belttechnique) => _firestoreProvider.saveBeltTechnique(techniqueID, _belttechnique);
+  Future<void> deleteBeltTechnique(String techniqueID) => _firestoreProvider.deleteBeltTechnique(techniqueID);
 }

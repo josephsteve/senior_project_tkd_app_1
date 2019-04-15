@@ -43,8 +43,23 @@ class FirestoreProvider {
       .snapshots();
   }
 
+  Stream<DocumentSnapshot> getBeltTechnique(String id) {
+    return _firestore
+      .collection("belt_techniques")
+      .document(id)
+      .snapshots();
+  }
+
   Future<String> addBeltTechnique(BeltTechniqueTemp _belttechnique) async {
     DocumentReference _ref = await _firestore.collection("belt_techniques").add(_belttechnique.toMap());
     return _ref.documentID;
+  }
+
+  Future<void> saveBeltTechnique(String techniqueID, BeltTechniqueTemp _belttechnique) async {
+    await _firestore.document("belt_techniques/$techniqueID").setData(_belttechnique.toMap(), merge: true);
+  }
+
+  Future<void> deleteBeltTechnique(String techniqueID) async {
+    await _firestore.document("belt_techniques/$techniqueID").delete();
   }
 }

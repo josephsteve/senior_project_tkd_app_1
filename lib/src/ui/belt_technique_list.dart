@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/belt_technique_model.dart';
 import 'belt_technique_add.dart';
+import 'slide_menu.dart';
 import '../blocs/belt_techniques_bloc_provider.dart';
 
 class ListBeltTechnique extends StatelessWidget {
@@ -18,7 +20,7 @@ class ListBeltTechnique extends StatelessWidget {
         title: Text(beltName),
         leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
       ),
-      body: BeltTechniqueListScreen(beltId: beltId),
+      body: BeltTechniqueListScreen(beltId: beltId, beltName: beltName,),
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddBeltTechnique(beltId: beltId, beltName: beltName))),
@@ -32,8 +34,9 @@ class ListBeltTechnique extends StatelessWidget {
 class BeltTechniqueListScreen extends StatefulWidget {
 
   final String beltId;
+  final String beltName;
 
-  const BeltTechniqueListScreen({Key key, this.beltId}): super(key: key);
+  const BeltTechniqueListScreen({Key key, this.beltId, this.beltName}): super(key: key);
 
   @override
   _BeltTechniqueListScreenState createState() => _BeltTechniqueListScreenState();
@@ -41,11 +44,7 @@ class BeltTechniqueListScreen extends StatefulWidget {
 
 class _BeltTechniqueListScreenState extends State<BeltTechniqueListScreen> {
   BeltTechniquesBloc _bloc;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final closeMenuNotifier = new StreamController.broadcast();
 
   @override
   void didChangeDependencies() {
@@ -56,26 +55,84 @@ class _BeltTechniqueListScreenState extends State<BeltTechniqueListScreen> {
   @override
   void dispose() {
     _bloc.dispose();
+    closeMenuNotifier.close();
     super.dispose();
+  }
+
+  getBeltTechniqueInfo(documentID) {
+    print(documentID);
+    print(widget.beltName);
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+      AddBeltTechnique(beltId: widget.beltId, beltName: widget.beltName, techniqueID: documentID,)));
+    closeMenuNotifier.sink.add(null);
+  }
+
+  deleteBelt(String documentID, String techniqueName) {
+    closeMenuNotifier.sink.add(null);
+    _showDialog(documentID, techniqueName);
+  }
+
+  void _showDialog(String techniqueID, String techniqueName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete Technique?"),
+          content: Text("Are you sure you want to delete $techniqueName?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                _bloc.delete(techniqueID);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      }
+    );
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot doc) {
     BeltTechniqueTemp _belttechnique = BeltTechniqueTemp.fromMap(doc.data);
-    return ListTile(
-      onTap: () {},
-      key: ValueKey(doc.documentID),
-      title: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFF957343)),
-          borderRadius: BorderRadius.circular(5.0)
-        ),
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: <Widget>[
-            Text(_belttechnique.techniqueName)
-          ],
+    return SlideMenu(
+      child: ListTile(
+        onTap: () {},
+        key: ValueKey(doc.documentID),
+        title: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFF957343)),
+            borderRadius: BorderRadius.circular(5.0)
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Text(_belttechnique.techniqueName)
+            ],
+          ),
         ),
       ),
+      menuItems: <Widget>[
+        new Container(
+          child: new IconButton(
+            icon: new Icon(Icons.delete),
+            onPressed: () => deleteBelt(doc.documentID, _belttechnique.techniqueName),
+          ),
+        ),
+        new Container(
+          child: new IconButton(
+            icon: new Icon(Icons.info),
+            onPressed: () => getBeltTechniqueInfo(doc.documentID),
+          ),
+        ),
+      ],
+      triggerCloseMenu: closeMenuNotifier.stream,
     );
   }
 

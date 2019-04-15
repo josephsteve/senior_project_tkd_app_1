@@ -24,7 +24,6 @@ class BeltTechniquesBloc {
     handleData: (techniquename, sink) {
       if (techniquename.length > 3 && RegExp(r'[a-zA-Z]').hasMatch(techniquename)) {
         sink.add(techniquename);
-        print(techniquename);
       } else {
         sink.addError("techniqueName should have 3 characters or more and letters only");
       }
@@ -44,20 +43,41 @@ class BeltTechniquesBloc {
     }
   );
 
-  void submit(String beltId) {
+  void setTechniqueName(String techniqueName) {
+    _techniqueName.sink.add(techniqueName);
+  }
+
+  void setDifficulty(String difficulty) {
+    _difficulty.sink.add(difficulty);
+  }
+
+  void submit(String beltId, String techniqueID) {
     _showProgress.sink.add(true);
-    print(beltId);
-    print(_techniqueName.value);
     BeltTechniqueTemp _belt = BeltTechniqueTemp(beltId: beltId, techniqueName: _techniqueName.value, difficulty: int.parse(_difficulty.value));
-    _repository.addBeltTechnique(_belt)
-      .then((value) {
-      _id.sink.add(value);
+    if (techniqueID != null && techniqueID.isNotEmpty) {
+      _repository.saveBeltTechnique(techniqueID, _belt);
       _showProgress.sink.add(false);
-    });
+    } else {
+      _repository.addBeltTechnique(_belt)
+        .then((value) {
+        _id.sink.add(value);
+        _showProgress.sink.add(false);
+      });
+    }
+  }
+
+  void delete(String techniqueID) {
+    _showProgress.sink.add(true);
+    _repository.deleteBeltTechnique(techniqueID);
+    _showProgress.sink.add(false);
   }
 
   Stream<QuerySnapshot> getBeltTechniques(String beltId) {
     return _repository.getBeltTechniques(beltId);
+  }
+
+  Stream<DocumentSnapshot> getBeltTechnique(String id) {
+    return _repository.getBeltTechnique(id);
   }
 
   void dispose() async {

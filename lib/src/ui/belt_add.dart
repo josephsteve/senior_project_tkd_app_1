@@ -37,15 +37,19 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _bloc = BeltsBlocProvider.of(context);
-    _bloc.getBelt(widget.beltID).listen((data) {
-      Belt _belt = Belt.fromMap(data.data);
-      setState(() {
-        beltNameController.text = _belt.beltname;
-        _bloc.setBeltName(_belt.beltname);
-        levelController.text = _belt.level.toString();
-        _bloc.setLevel(_belt.level.toString());
+    if (widget.beltID != null && widget.beltID.isNotEmpty) {
+      _bloc.getBelt(widget.beltID).listen((data) {
+        if (data != null) {
+          Belt _belt = Belt.fromMap(data.data);
+          setState(() {
+            beltNameController.text = _belt.beltname;
+            _bloc.setBeltName(_belt.beltname);
+            levelController.text = _belt.level.toString();
+            _bloc.setLevel(_belt.level.toString());
+          });
+        }
       });
-    });
+    }
   }
 
   @override

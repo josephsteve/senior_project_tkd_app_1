@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'belt_techniques_bloc.dart';
 export 'belt_techniques_bloc.dart';
+export '../models/belt_technique_model.dart';
 
 class BeltTechniquesBlocProvider extends InheritedWidget {
   final bloc = BeltTechniquesBloc();

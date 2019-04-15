@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'belt_technique_list.dart';
 import '../blocs/belt_techniques_bloc_provider.dart';
 import '../blocs/belt_techniques_bloc.dart';
 
@@ -7,8 +6,9 @@ class AddBeltTechnique extends StatelessWidget {
 
   final String beltId;
   final String beltName;
+  final String techniqueID;
 
-  const AddBeltTechnique({Key key, this.beltId, this.beltName}): super(key: key);
+  const AddBeltTechnique({Key key, this.beltId, this.beltName, this.techniqueID}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class AddBeltTechnique extends StatelessWidget {
         title: Text("Add Technique for " + beltName),
         leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
       ),
-      body: BeltTechniqueAddScreen(beltId: beltId, beltName: beltName)
+      body: BeltTechniqueAddScreen(beltId: beltId, beltName: beltName, techniqueID: techniqueID,),
     );
   }
 }
@@ -26,7 +26,9 @@ class BeltTechniqueAddScreen extends StatefulWidget {
 
   final String beltId;
   final String beltName;
-  const BeltTechniqueAddScreen({Key key, this.beltId, this.beltName}): super(key: key);
+  final String techniqueID;
+
+  const BeltTechniqueAddScreen({Key key, this.beltId, this.beltName, this.techniqueID}): super(key: key);
 
   @override
   _BeltTechniqueAddScreenState createState() => _BeltTechniqueAddScreenState();
@@ -34,11 +36,26 @@ class BeltTechniqueAddScreen extends StatefulWidget {
 
 class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
   BeltTechniquesBloc _bloc;
+  final TextEditingController techniqueNameController = new TextEditingController();
+  final TextEditingController difficultyController = new TextEditingController();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _bloc = BeltTechniquesBlocProvider.of(context);
+    if (widget.techniqueID != null && widget.techniqueID.isNotEmpty) {
+      _bloc.getBeltTechnique(widget.techniqueID).listen((data) {
+        if (data != null) {
+          BeltTechniqueTemp _beltTechnique = BeltTechniqueTemp.fromMap(data.data);
+          setState(() {
+            techniqueNameController.text = _beltTechnique.techniqueName;
+            _bloc.setTechniqueName(_beltTechnique.techniqueName);
+            difficultyController.text = _beltTechnique.difficulty.toString();
+            _bloc.setDifficulty(_beltTechnique.difficulty.toString());
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -52,6 +69,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
       stream: _bloc.techniqueName,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         return TextField(
+          controller: techniqueNameController,
           onChanged: _bloc.changeTechniqueName,
           decoration: InputDecoration(
             hintText: 'Enter Technique Name', errorText: snapshot.error),
@@ -65,6 +83,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
       stream: _bloc.difficulty,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         return TextField(
+          controller: difficultyController,
           onChanged: _bloc.changeDifficulty,
           decoration: InputDecoration(
             hintText: 'Enter Difficulty', errorText: snapshot.error),
@@ -96,7 +115,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
                 color: Colors.blue,
                 child: Text('Save'),
                 onPressed: () {
-                  _bloc.submit(widget.beltId);
+                  _bloc.submit(widget.beltId, widget.techniqueID);
                   Navigator.pop(context);
                 },
               ),
