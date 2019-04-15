@@ -40,14 +40,33 @@ class BeltsBloc {
     }
   );
 
-  void submit() {
+  void setBeltName(String beltName) {
+    _beltname.sink.add(beltName);
+  }
+
+  void setLevel(String level) {
+    _level.sink.add(level);
+  }
+
+  void submit(String beltID) {
     _showProgress.sink.add(true);
     Belt _belt = Belt(beltname: _beltname.value, level: int.parse(_level.value));
-    _repository.addBelt(_belt)
-    .then((value) {
-      _id.sink.add(value);
+    if (beltID != null && beltID.isNotEmpty) {
+      _repository.saveBelt(beltID, _belt);
       _showProgress.sink.add(false);
-    });
+    } else {
+      _repository.addBelt(_belt)
+        .then((value) {
+        _id.sink.add(value);
+        _showProgress.sink.add(false);
+      });
+    }
+  }
+
+  void delete(String beltID) {
+    _showProgress.sink.add(true);
+    _repository.deleteBelt(beltID);
+    _showProgress.sink.add(false);
   }
 
   Stream<QuerySnapshot> getAllBelts() {

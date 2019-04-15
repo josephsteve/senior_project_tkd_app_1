@@ -33,6 +33,40 @@ class _BeltListScreenState extends State<BeltListScreen> {
     closeMenuNotifier.sink.add(null);
   }
 
+  deleteBelt(String documentID, String beltName) {
+    closeMenuNotifier.sink.add(null);
+    _showDialog(documentID, beltName);
+  }
+
+  void _showDialog(String beltID, String beltName) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("Delete Belt?"),
+          content: Text("Are you sure you want to delete $beltName?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                _bloc.delete(beltID);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot doc) {
     Belt _belt = Belt.fromMap(doc.data);
     return SlideMenu(
@@ -58,7 +92,7 @@ class _BeltListScreenState extends State<BeltListScreen> {
         new Container(
           child: new IconButton(
             icon: new Icon(Icons.delete),
-            onPressed: () => closeMenuNotifier.sink.add(null),
+            onPressed: () => deleteBelt(doc.documentID, _belt.beltname),
           ),
         ),
         new Container(

@@ -12,7 +12,7 @@ class AddBelt extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Belt"),
+        title: Text((beltID != null && beltID.isNotEmpty ? "Edit" : "Add") + " Belt"),
         leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
       ),
       body: BeltAddScreen(beltID: beltID,),
@@ -30,11 +30,22 @@ class BeltAddScreen extends StatefulWidget {
 
 class _BeltAddScreenState extends State<BeltAddScreen> {
   BeltsBloc _bloc;
+  final TextEditingController beltNameController = new TextEditingController();
+  final TextEditingController levelController = new TextEditingController();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _bloc = BeltsBlocProvider.of(context);
+    _bloc.getBelt(widget.beltID).listen((data) {
+      Belt _belt = Belt.fromMap(data.data);
+      setState(() {
+        beltNameController.text = _belt.beltname;
+        _bloc.setBeltName(_belt.beltname);
+        levelController.text = _belt.level.toString();
+        _bloc.setLevel(_belt.level.toString());
+      });
+    });
   }
 
   @override
@@ -48,6 +59,7 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
       stream: _bloc.beltname,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         return TextField(
+          controller: beltNameController,
           onChanged: _bloc.changeBeltName,
           decoration: InputDecoration(
             hintText: 'Enter Belt Name', errorText: snapshot.error),
@@ -61,6 +73,7 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
       stream: _bloc.level,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         return TextField(
+          controller: levelController,
           onChanged: _bloc.changeLevel,
           decoration: InputDecoration(
               hintText: 'Enter Belt Level', errorText: snapshot.error),
@@ -71,9 +84,6 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // _bloc.getBelt(widget.beltID);
-    // TODO: getBelt(widget.beltID);
-    print(widget.beltID);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -95,7 +105,7 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
                 color: Colors.blue,
                 child: Text('Save'),
                 onPressed: () {
-                  _bloc.submit();
+                  _bloc.submit(widget.beltID);
                   Navigator.pop(context);
                 },
               ),

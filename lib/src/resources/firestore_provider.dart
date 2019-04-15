@@ -26,6 +26,14 @@ class FirestoreProvider {
     DocumentReference _ref = await _firestore.collection("belts").add(_belt.toMap());
     return _ref.documentID;
   }
+
+  Future<void> saveBelt(String beltID, Belt _belt) async {
+    await _firestore.document("belts/$beltID").setData(_belt.toMap(), merge: true);
+  }
+
+  Future<void> deleteBelt(String beltID) async {
+    await _firestore.document("belts/$beltID").delete();
+  }
   
   Stream<QuerySnapshot> getBeltTechniques(String beltId) {
     return _firestore
