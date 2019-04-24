@@ -5,6 +5,7 @@ import '../models/belt_technique_model.dart';
 import 'belt_technique_add.dart';
 import 'slide_menu.dart';
 import '../blocs/belt_techniques_bloc_provider.dart';
+import 'belt_technique_view.dart';
 
 class ListBeltTechnique extends StatelessWidget {
 
@@ -103,7 +104,9 @@ class _BeltTechniqueListScreenState extends State<BeltTechniqueListScreen> {
     BeltTechniqueTemp _belttechnique = BeltTechniqueTemp.fromMap(doc.data);
     return SlideMenu(
       child: ListTile(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ViewBeltTechnique(techniqueID: doc.documentID, techniqueName: _belttechnique.techniqueName)));
+        },
         key: ValueKey(doc.documentID),
         title: Container(
           decoration: BoxDecoration(
