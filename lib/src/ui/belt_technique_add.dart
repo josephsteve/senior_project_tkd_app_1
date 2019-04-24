@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../blocs/belt_techniques_bloc_provider.dart';
 import '../blocs/belt_techniques_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddBeltTechnique extends StatelessWidget {
 
@@ -38,6 +41,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
   BeltTechniquesBloc _bloc;
   final TextEditingController techniqueNameController = new TextEditingController();
   final TextEditingController difficultyController = new TextEditingController();
+  List<String> imgList;
 
   @override
   void didChangeDependencies() {
@@ -47,11 +51,16 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
       _bloc.getBeltTechnique(widget.techniqueID).listen((data) {
         if (data != null) {
           BeltTechniqueTemp _beltTechnique = BeltTechniqueTemp.fromMap(data.data);
+          print(_beltTechnique.toMap());
           setState(() {
             techniqueNameController.text = _beltTechnique.techniqueName;
             _bloc.setTechniqueName(_beltTechnique.techniqueName);
             difficultyController.text = _beltTechnique.difficulty.toString();
             _bloc.setDifficulty(_beltTechnique.difficulty.toString());
+            if (_beltTechnique.images != null) {
+              imgList = _beltTechnique.images.cast<String>().toList();
+              _bloc.setImages(_beltTechnique.images.cast<String>().toList());
+            }
           });
         }
       });
@@ -92,6 +101,18 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
     );
   }
 
+  Future<void> getImageFromGallery() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    String imageurl = await _bloc.uploadImage(image);
+    setState(() {
+      if (imgList == null || imgList.isEmpty) {
+        imgList = new List<String>();
+      }
+      imgList.add(imageurl);
+      _bloc.setImages(imgList);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -104,6 +125,34 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: difficultyField(),
+        ),
+        (imgList != null && imgList.isNotEmpty) ?
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              TechniqueImages(imgList: imgList,),
+            ],
+          ),
+        ) : Container(),
+//        Padding(
+//          padding: const EdgeInsets.all(8.0),
+//          child: Container(
+//            child: _image == null ? Container() : Image.file(_image, fit: BoxFit.cover, width: 250.0,),
+//          ),
+//        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+//          child: ButtonBar(
+//            alignment: MainAxisAlignment.center,
+//            children: <Widget>[
+//              IconButton(icon: Icon(Icons.add_a_photo), onPressed: getImageFromGallery)
+//            ],
+//          ),
+          child: RaisedButton(
+            child: Text("Add Photo"),
+            onPressed: getImageFromGallery,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -132,4 +181,38 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
     );
   }
 }
+
+class TechniqueImages extends StatefulWidget {
+
+  final List<String> imgList;
+
+  const TechniqueImages({Key key, this.imgList}): super(key: key);
+
+  @override
+  _TechniqueImagesState createState() => _TechniqueImagesState();
+}
+
+class _TechniqueImagesState extends State<TechniqueImages> {
+
+  Widget _buildImageItem(BuildContext context, int index) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Image.network(widget.imgList[index], width: 90.0, height: 90.0),
+//        Text("delete")
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: widget.imgList.length,
+      itemBuilder: _buildImageItem,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+    );
+  }
+}
+
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import '../resources/repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
 
 class BeltTechniquesBloc {
   final _repository = Repository();
@@ -10,6 +11,7 @@ class BeltTechniquesBloc {
   final _techniqueName = BehaviorSubject<String>();
   final _difficulty = BehaviorSubject<String>();
   final _showProgress = BehaviorSubject<bool>();
+  final _images = BehaviorSubject<List<String>>();
 
   Observable<String> get id => _id.stream;
 //  Observable<String> get beltId => _beltId.stream;
@@ -51,9 +53,14 @@ class BeltTechniquesBloc {
     _difficulty.sink.add(difficulty);
   }
 
+  void setImages(List<String> images) {
+    _images.sink.add(images);
+  }
+
   void submit(String beltId, String techniqueID) {
     _showProgress.sink.add(true);
-    BeltTechniqueTemp _belt = BeltTechniqueTemp(beltId: beltId, techniqueName: _techniqueName.value, difficulty: int.parse(_difficulty.value));
+    BeltTechniqueTemp _belt = BeltTechniqueTemp(beltId: beltId, techniqueName: _techniqueName.value,
+      difficulty: int.parse(_difficulty.value), images: _images.value);
     if (techniqueID != null && techniqueID.isNotEmpty) {
       _repository.saveBeltTechnique(techniqueID, _belt);
       _showProgress.sink.add(false);
@@ -80,6 +87,13 @@ class BeltTechniquesBloc {
     return _repository.getBeltTechnique(id);
   }
 
+  Future<String> uploadImage(File file) async {
+    _showProgress.sink.add(true);
+    String downloadUrl = await _repository.uploadBeltTechniqueImage(file);
+    _showProgress.sink.add(false);
+    return downloadUrl;
+  }
+
   void dispose() async {
     await _id.drain();
     _id.close();
@@ -91,5 +105,7 @@ class BeltTechniquesBloc {
     _difficulty.close();
     await _showProgress.drain();
     _showProgress.close();
+    await _images.drain();
+    _images.close();
   }
 }

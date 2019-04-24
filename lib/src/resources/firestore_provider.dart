@@ -3,10 +3,13 @@ import '../models/belt_model.dart';
 export '../models/belt_model.dart';
 import '../models/belt_technique_model.dart';
 export '../models/belt_technique_model.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class FirestoreProvider {
 
   Firestore _firestore = Firestore.instance;
+  FirebaseStorage _storage = FirebaseStorage.instance;
 
   Stream<QuerySnapshot> getAllBelts() {
     return _firestore
@@ -61,5 +64,18 @@ class FirestoreProvider {
 
   Future<void> deleteBeltTechnique(String techniqueID) async {
     await _firestore.document("belt_techniques/$techniqueID").delete();
+  }
+
+  Future<String> uploadBeltTechniqueImage(File file) async {
+    String downloadUrl = "";
+    final String fn = DateTime.now().millisecondsSinceEpoch.toString();
+    final String fileName = "$fn.png";
+    final StorageReference ref = _storage.ref().child(fileName);
+    StorageUploadTask uploadTask = ref.putFile(file);
+    StorageTaskSnapshot complete = await uploadTask.onComplete;
+    if (complete.bytesTransferred > 0) {
+       downloadUrl = await ref.getDownloadURL();
+    }
+    return downloadUrl;
   }
 }

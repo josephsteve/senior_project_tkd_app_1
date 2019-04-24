@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firestore_provider.dart';
 export '../models/belt_model.dart';
 export '../models/belt_technique_model.dart';
+import 'dart:io';
 
 class Repository {
 
@@ -17,4 +18,5 @@ class Repository {
   Future<String> addBeltTechnique(BeltTechniqueTemp _belttechnique) => _firestoreProvider.addBeltTechnique(_belttechnique);
   Future<void> saveBeltTechnique(String techniqueID, BeltTechniqueTemp _belttechnique) => _firestoreProvider.saveBeltTechnique(techniqueID, _belttechnique);
   Future<void> deleteBeltTechnique(String techniqueID) => _firestoreProvider.deleteBeltTechnique(techniqueID);
+  Future<String> uploadBeltTechniqueImage(File file) => _firestoreProvider.uploadBeltTechniqueImage(file);
 }
