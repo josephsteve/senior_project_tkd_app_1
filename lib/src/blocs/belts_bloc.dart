@@ -8,6 +8,7 @@ class BeltsBloc {
   final _id = BehaviorSubject<String>();
   final _beltname = BehaviorSubject<String>();
   final _level = BehaviorSubject<String>();
+  final _color = BehaviorSubject<int>();
   final _showProgress = BehaviorSubject<bool>();
 
   Observable<String> get id => _id.stream;
@@ -48,9 +49,13 @@ class BeltsBloc {
     _level.sink.add(level);
   }
 
+  void setColor(int color) {
+    _color.sink.add(color);
+  }
+
   void submit(String beltID) {
     _showProgress.sink.add(true);
-    Belt _belt = Belt(beltname: _beltname.value, level: int.parse(_level.value));
+    Belt _belt = Belt(beltname: _beltname.value, level: int.parse(_level.value), color: _color.value);
     if (beltID != null && beltID.isNotEmpty) {
       _repository.saveBelt(beltID, _belt);
       _showProgress.sink.add(false);
@@ -86,6 +91,8 @@ class BeltsBloc {
     _level.close();
     await _showProgress.drain();
     _showProgress.close();
+    await _color.drain();
+    _color.close();
   }
 
 }

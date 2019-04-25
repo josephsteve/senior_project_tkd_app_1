@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../blocs/belts_bloc_provider.dart';
 import '../blocs/belts_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_colorpicker/material_picker.dart';
+import 'package:flutter_colorpicker/block_picker.dart';
+import 'package:flutter_colorpicker/utils.dart';
 
 class AddBelt extends StatelessWidget {
 
@@ -32,6 +36,7 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
   BeltsBloc _bloc;
   final TextEditingController beltNameController = new TextEditingController();
   final TextEditingController levelController = new TextEditingController();
+  int currentColorValue = 0xff443a49;
 
   @override
   void didChangeDependencies() {
@@ -46,6 +51,8 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
             _bloc.setBeltName(_belt.beltname);
             levelController.text = _belt.level.toString();
             _bloc.setLevel(_belt.level.toString());
+            currentColorValue = _belt.color;
+            _bloc.setColor(_belt.color);
           });
         }
       });
@@ -66,6 +73,7 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
           controller: beltNameController,
           onChanged: _bloc.changeBeltName,
           decoration: InputDecoration(
+            labelText: 'Enter Belt Name',
             hintText: 'Enter Belt Name', errorText: snapshot.error),
         );
       },
@@ -80,11 +88,17 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
           controller: levelController,
           onChanged: _bloc.changeLevel,
           decoration: InputDecoration(
+            labelText: 'Enter Belt Level',
               hintText: 'Enter Belt Level', errorText: snapshot.error),
         );
       },
     );
   }
+
+  void changeColor(Color color) => setState(() {
+    currentColorValue = color.value;
+    _bloc.setColor(currentColorValue);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +112,39 @@ class _BeltAddScreenState extends State<BeltAddScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: levelField(),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 50.0,
+                height: 50.0,
+                child: Text(""),
+                color: Color(currentColorValue),
+              ),
+              IconButton(icon: Icon(Icons.edit), onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      titlePadding: const EdgeInsets.all(0.0),
+                      contentPadding: const EdgeInsets.all(0.0),
+                      content: SingleChildScrollView(
+                        child: ColorPicker(
+                          pickerColor: Color(currentColorValue),
+                          onColorChanged: changeColor,
+                          colorPickerWidth: 1000.0,
+                          pickerAreaHeightPercent: 0.7,
+                          enableAlpha: true,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },)
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),

@@ -77,10 +77,15 @@ class _BeltListScreenState extends State<BeltListScreen> {
         key: ValueKey(doc.documentID),
         title: Container(
           decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              colors: [const Color(0xFFFFFFFF), Color(_belt.color == null ? 0xFFFFFFFF : _belt.color)],
+              tileMode: TileMode.clamp,
+            ),
             border: Border.all(color: const Color(0xFF957343)),
             borderRadius: BorderRadius.circular(5.0)
           ),
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(18.0),
           child: Row(
             children: <Widget>[
               Text(_belt.beltname)
