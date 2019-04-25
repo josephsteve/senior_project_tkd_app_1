@@ -88,6 +88,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
           controller: techniqueNameController,
           onChanged: _bloc.changeTechniqueName,
           decoration: InputDecoration(
+            labelText: 'Enter Technique Name',
             hintText: 'Enter Technique Name', errorText: snapshot.error),
         );
       },
@@ -102,6 +103,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
           controller: difficultyController,
           onChanged: _bloc.changeDifficulty,
           decoration: InputDecoration(
+            labelText: 'Enter Difficulty',
             hintText: 'Enter Difficulty', errorText: snapshot.error),
         );
       },
@@ -116,6 +118,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
           controller: descriptionController,
           onChanged: _bloc.changeDescription,
           decoration: InputDecoration(
+            labelText: 'Enter Description',
             hintText: 'Enter Description', errorText: snapshot.error),
           keyboardType: TextInputType.multiline,
           maxLines: 5,

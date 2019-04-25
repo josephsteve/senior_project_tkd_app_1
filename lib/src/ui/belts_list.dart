@@ -88,7 +88,7 @@ class _BeltListScreenState extends State<BeltListScreen> {
           padding: const EdgeInsets.all(18.0),
           child: Row(
             children: <Widget>[
-              Text(_belt.beltname)
+              Text(_belt.beltname, style: TextStyle(fontWeight: FontWeight.bold),)
             ],
           ),
         ),
