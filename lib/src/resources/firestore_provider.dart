@@ -69,7 +69,7 @@ class FirestoreProvider {
   Future<String> uploadBeltTechniqueImage(File file) async {
     String downloadUrl = "";
     final String fn = DateTime.now().millisecondsSinceEpoch.toString();
-    final String fileName = "$fn.png";
+    final String fileName = "$fn.jpg";
     final StorageReference ref = _storage.ref().child(fileName);
     StorageUploadTask uploadTask = ref.putFile(file);
     StorageTaskSnapshot complete = await uploadTask.onComplete;

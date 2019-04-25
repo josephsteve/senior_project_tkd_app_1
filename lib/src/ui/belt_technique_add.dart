@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../blocs/belt_techniques_bloc_provider.dart';
 import '../blocs/belt_techniques_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart' show getTemporaryDirectory;
+import 'package:image/image.dart' as Im;
 
 class AddBeltTechnique extends StatelessWidget {
 
@@ -102,7 +105,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
   }
 
   Future<void> getImageFromGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await takeCompressedPicture();  // await ImagePicker.pickImage(source: ImageSource.gallery);
     String imageurl = await _bloc.uploadImage(image);
     setState(() {
       if (imgList == null || imgList.isEmpty) {
@@ -111,6 +114,33 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
       imgList.add(imageurl);
       _bloc.setImages(imgList);
     });
+  }
+
+  Future<File> takeCompressedPicture() async {
+    var _image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (_image == null) {
+      return null;
+    }
+    final tempDir = await getTemporaryDirectory();
+    final String fn = DateTime.now().millisecondsSinceEpoch.toString();
+    _CompressObject compressObject = _CompressObject(_image, tempDir.path, fn);
+    String filePath = await _compressImage(compressObject);
+    File file = File(filePath);
+
+    return file;
+  }
+
+  Future<String> _compressImage(_CompressObject object) async {
+    return compute(_decodeImage, object);
+  }
+
+  static String _decodeImage(_CompressObject object) {
+    Im.Image image = Im.decodeImage(object.imageFile.readAsBytesSync());
+    Im.Image smallerImage = Im.copyResize(image, 1024);
+    final String _imageFileName = "${object.fileName}.jpg";
+    var decodedImageFile = File(object.path + _imageFileName);
+    decodedImageFile.writeAsBytesSync(Im.encodeJpg(smallerImage, quality: 85));
+    return decodedImageFile.path;
   }
 
   @override
@@ -215,4 +245,10 @@ class _TechniqueImagesState extends State<TechniqueImages> {
   }
 }
 
+class _CompressObject {
+  File imageFile;
+  String path;
+  String fileName;
 
+  _CompressObject(this.imageFile, this.path, this.fileName);
+}
