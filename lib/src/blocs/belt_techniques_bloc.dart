@@ -12,14 +12,17 @@ class BeltTechniquesBloc {
   final _difficulty = BehaviorSubject<String>();
   final _showProgress = BehaviorSubject<bool>();
   final _images = BehaviorSubject<List<String>>();
+  final _description = BehaviorSubject<String>();
 
   Observable<String> get id => _id.stream;
 //  Observable<String> get beltId => _beltId.stream;
   Observable<String> get techniqueName => _techniqueName.stream.transform(_validateName);
   Observable<String> get difficulty => _difficulty.stream.transform(_validateDifficulty);
+  Observable<String> get description => _description.stream;
   Observable<bool> get showProgress => _showProgress.stream;
   Function(String) get changeTechniqueName => _techniqueName.sink.add;
   Function(String) get changeDifficulty => _difficulty.sink.add;
+  Function(String) get changeDescription => _description.sink.add;
 //  Function(String) get changeBeltId => _beltId.sink.add;
 
   final _validateName = StreamTransformer<String, String>.fromHandlers(
@@ -57,10 +60,14 @@ class BeltTechniquesBloc {
     _images.sink.add(images);
   }
 
+  void setDescription(String description) {
+    _description.sink.add(description);
+  }
+
   void submit(String beltId, String techniqueID) {
     _showProgress.sink.add(true);
     BeltTechniqueTemp _belt = BeltTechniqueTemp(beltId: beltId, techniqueName: _techniqueName.value,
-      difficulty: int.parse(_difficulty.value), images: _images.value);
+      difficulty: int.parse(_difficulty.value), images: _images.value, description: _description.value);
     if (techniqueID != null && techniqueID.isNotEmpty) {
       _repository.saveBeltTechnique(techniqueID, _belt);
       _showProgress.sink.add(false);
@@ -107,5 +114,7 @@ class BeltTechniquesBloc {
     _showProgress.close();
     await _images.drain();
     _images.close();
+    await _description.drain();
+    _description.close();
   }
 }

@@ -113,7 +113,7 @@ class _BeltTechniqueListScreenState extends State<BeltTechniqueListScreen> {
             border: Border.all(color: const Color(0xFF957343)),
             borderRadius: BorderRadius.circular(5.0)
           ),
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(18.0),
           child: Row(
             children: <Widget>[
               Text(_belttechnique.techniqueName)

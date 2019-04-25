@@ -44,6 +44,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
   BeltTechniquesBloc _bloc;
   final TextEditingController techniqueNameController = new TextEditingController();
   final TextEditingController difficultyController = new TextEditingController();
+  final TextEditingController descriptionController = new TextEditingController();
   List<String> imgList;
 
   @override
@@ -64,6 +65,8 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
               imgList = _beltTechnique.images.cast<String>().toList();
               _bloc.setImages(_beltTechnique.images.cast<String>().toList());
             }
+            descriptionController.text = _beltTechnique.description;
+            _bloc.setDescription(_beltTechnique.description);
           });
         }
       });
@@ -99,6 +102,22 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
           onChanged: _bloc.changeDifficulty,
           decoration: InputDecoration(
             hintText: 'Enter Difficulty', errorText: snapshot.error),
+        );
+      },
+    );
+  }
+
+  Widget descriptionField() {
+    return StreamBuilder(
+      stream: _bloc.description,
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        return TextField(
+          controller: descriptionController,
+          onChanged: _bloc.changeDescription,
+          decoration: InputDecoration(
+            hintText: 'Enter Description', errorText: snapshot.error),
+          keyboardType: TextInputType.multiline,
+          maxLines: 5,
         );
       },
     );
@@ -145,68 +164,76 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+    return ListView(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: techniqueNameField(),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: difficultyField(),
-        ),
-        (imgList != null && imgList.isNotEmpty) ?
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              TechniqueImages(imgList: imgList,),
-            ],
-          ),
-        ) : Container(),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: techniqueNameField(),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: difficultyField(),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: descriptionField(),
+            ),
+            (imgList != null && imgList.isNotEmpty) ?
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  TechniqueImages(imgList: imgList,),
+                ],
+              ),
+            ) : Container(),
 //        Padding(
 //          padding: const EdgeInsets.all(8.0),
 //          child: Container(
 //            child: _image == null ? Container() : Image.file(_image, fit: BoxFit.cover, width: 250.0,),
 //          ),
 //        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
 //          child: ButtonBar(
 //            alignment: MainAxisAlignment.center,
 //            children: <Widget>[
 //              IconButton(icon: Icon(Icons.add_a_photo), onPressed: getImageFromGallery)
 //            ],
 //          ),
-          child: RaisedButton(
-            child: Text("Add Photo"),
-            onPressed: getImageFromGallery,
-          ),
+              child: RaisedButton(
+                child: Text("Add Photo"),
+                onPressed: getImageFromGallery,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ButtonBar(
+                alignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(side: BorderSide(style: BorderStyle.none), borderRadius: BorderRadius.circular(8.0)),
+                    color: Colors.blue,
+                    child: Text('Save'),
+                    onPressed: () {
+                      _bloc.submit(widget.beltId, widget.techniqueID);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(side: BorderSide(style: BorderStyle.none), borderRadius: BorderRadius.circular(8.0)),
+                    color: Colors.grey,
+                    child: Text('Cancel'),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton(
-                shape: RoundedRectangleBorder(side: BorderSide(style: BorderStyle.none), borderRadius: BorderRadius.circular(8.0)),
-                color: Colors.blue,
-                child: Text('Save'),
-                onPressed: () {
-                  _bloc.submit(widget.beltId, widget.techniqueID);
-                  Navigator.pop(context);
-                },
-              ),
-              RaisedButton(
-                shape: RoundedRectangleBorder(side: BorderSide(style: BorderStyle.none), borderRadius: BorderRadius.circular(8.0)),
-                color: Colors.grey,
-                child: Text('Cancel'),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        )
       ],
     );
   }

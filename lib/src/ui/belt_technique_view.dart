@@ -38,6 +38,7 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
   BeltTechniquesBloc _bloc;
   List<String> imgList;
   List child;
+  String description;
 
   @override
   void didChangeDependencies() {
@@ -50,6 +51,7 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
           if (_beltTechnique.images != null && _beltTechnique.images.isNotEmpty) {
            imgList = _beltTechnique.images.cast<String>().toList();
            setState(() {
+             description = _beltTechnique.description;
              child = map<Widget>(
                imgList,
                  (index, i) {
@@ -73,7 +75,7 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
                            ),
                            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                            child: Text(
-                             'No. $index image',
+                             '',
                              style: TextStyle(
                                color: Colors.white,
                                fontSize: 20.0,
@@ -107,7 +109,16 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 15.0),
           child: Column(children: [
-            CarouselWithIndicator(imgList: imgList, child: child),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CarouselWithIndicator(imgList: imgList, child: child),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                child: Text(description ?? "", style: TextStyle(fontSize: 20.0),),
+              ),
+            ),
           ])),
       ],
     );
