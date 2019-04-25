@@ -62,7 +62,7 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
                    child: ClipRRect(
                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
                      child: Stack(children: <Widget>[
-                       Image.network(i, fit: BoxFit.cover, width: 1000.0),
+                       Image.network(i, fit: BoxFit.fitHeight, height: 300.0),
                        Positioned(
                          bottom: 0.0,
                          left: 0.0,
@@ -159,7 +159,7 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
         items: widget.child,
         autoPlay: true,
         enlargeCenterPage: true,
-        aspectRatio: 2.0,
+        aspectRatio: 1.0,
         onPageChanged: (index) {
           setState(() {
             _current = index;
