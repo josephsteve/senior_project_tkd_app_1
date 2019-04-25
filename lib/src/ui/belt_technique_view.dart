@@ -48,10 +48,12 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
       _bloc.getBeltTechnique(widget.techniqueID).listen((data) {
         if (data != null) {
           BeltTechniqueTemp _beltTechnique = BeltTechniqueTemp.fromMap(data.data);
+          setState(() {
+            description = _beltTechnique.description;
+          });
           if (_beltTechnique.images != null && _beltTechnique.images.isNotEmpty) {
            imgList = _beltTechnique.images.cast<String>().toList();
            setState(() {
-             description = _beltTechnique.description;
              child = map<Widget>(
                imgList,
                  (index, i) {
@@ -99,6 +101,7 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
   @override
   void dispose() {
     _bloc.dispose();
+    imgList = null;
     super.dispose();
   }
 
@@ -108,7 +111,7 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(vertical: 15.0),
-          child: Column(children: [
+          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CarouselWithIndicator(imgList: imgList, child: child),
@@ -116,7 +119,7 @@ class _ViewBeltTechniqueScreenState extends State<ViewBeltTechniqueScreen> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Container(
-                child: Text(description ?? "", style: TextStyle(fontSize: 20.0),),
+                child: Text(description == null ? "" : description.trim(), style: TextStyle(fontSize: 20.0),),
               ),
             ),
           ])),

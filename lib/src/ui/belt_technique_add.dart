@@ -76,6 +76,7 @@ class _BeltTechniqueAddScreenState extends State<BeltTechniqueAddScreen> {
   @override
   void dispose() {
     _bloc.dispose();
+    imgList = null;
     super.dispose();
   }
 
